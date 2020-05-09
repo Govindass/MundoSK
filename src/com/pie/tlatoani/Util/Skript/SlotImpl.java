@@ -31,28 +31,16 @@ public abstract class SlotImpl implements InvocationHandler {
     }
 
     public static Class<? extends Debuggable> getSkriptSlotClass() {
-        if (isLegacy()) {
-            return SlotLegacy.SUPERCLASS;
-        } else {
-            return SlotNew.SUPERCLASS;
+        return SlotNew.SUPERCLASS;
         }
-    }
 
     public static <E extends Event> void registerEventValue(Class<E> event, Function<E, SlotImpl> getter) {
-        if (isLegacy()) {
-            SlotLegacy.registerEventValue(event, getter);
-        } else {
-            SlotNew.registerEventValue(event, getter);
+        SlotNew.registerEventValue(event, getter);
         }
-    }
 
     public Debuggable getSkriptForm() {
-        if (isLegacy()) {
-            return new SlotLegacy(this);
-        } else {
-            return new SlotNew(this);
+        return new SlotNew(this);
         }
-    }
 
     public abstract ItemStack getItem();
 

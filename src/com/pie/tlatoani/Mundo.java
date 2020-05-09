@@ -4,7 +4,6 @@ import ch.njol.skript.Skript;
 import com.pie.tlatoani.Achievement.AchievementMundo;
 import com.pie.tlatoani.Book.BookMundo;
 import com.pie.tlatoani.Chunk.ChunkMundo;
-import com.pie.tlatoani.CodeBlock.CodeBlockMundo;
 import com.pie.tlatoani.CustomEvent.CustomEventMundo;
 import com.pie.tlatoani.EnchantedBook.EnchantedBookMundo;
 import com.pie.tlatoani.Generator.GeneratorManager;
@@ -15,15 +14,10 @@ import com.pie.tlatoani.ProtocolLib.PacketManager;
 import com.pie.tlatoani.Core.Registration.Documentation;
 import com.pie.tlatoani.Core.Registration.Registration;
 import com.pie.tlatoani.Skin.SkinMundo;
-import com.pie.tlatoani.Socket.SocketMundo;
-import com.pie.tlatoani.Socket.UtilFunctionSocket;
 import com.pie.tlatoani.Tablist.TablistMundo;
-import com.pie.tlatoani.TerrainControl.TerrainControlMundo;
 import com.pie.tlatoani.Throwable.ThrowableMundo;
 import com.pie.tlatoani.Core.Static.*;
-import com.pie.tlatoani.WebSocket.WebSocketManager;
 import com.pie.tlatoani.WorldBorder.WorldBorderMundo;
-import com.pie.tlatoani.WorldCreator.WorldCreatorMundo;
 import com.pie.tlatoani.WorldManagement.WorldLoader.WorldLoader;
 import com.pie.tlatoani.WorldManagement.WorldManagementMundo;
 import com.pie.tlatoani.ZExperimental.ZExperimentalMundo;
@@ -69,17 +63,12 @@ public class Mundo extends JavaPlugin {
 
         Registration.register("Book", BookMundo::load);
         Registration.register("Chunk", ChunkMundo::load);
-        Registration.register("CodeBlock", CodeBlockMundo::load);
         Registration.register("EnchantedBook", EnchantedBookMundo::load);
-        Registration.register("Generator", GeneratorManager::load);
         Registration.register("ListUtil", ListUtil::load);
         Registration.register("Miscellaneous", MiscMundo::load);
         Registration.register("Probability", ProbabilityMundo::load);
-        Registration.register("Socket", SocketMundo::load);
         Registration.register("Throwable", ThrowableMundo::load);
-        Registration.register("WebSocket", WebSocketManager::load);
         Registration.register("WorldBorder", WorldBorderMundo::load);
-        Registration.register("WorldCreator", WorldCreatorMundo::load);
         Registration.register("WorldManagement", WorldManagementMundo::load);
         if (Utilities.serverHasPlugin("ProtocolLib")) {
             Registration.register("Packet", PacketManager::load, "ProtocolLib");
@@ -87,9 +76,6 @@ public class Mundo extends JavaPlugin {
                 Registration.register("Skin", SkinMundo::load, "ProtocolLib");
                 Registration.register("Tablist", TablistMundo::load, "ProtocolLib");
             }
-        }
-        if (Utilities.serverHasPlugin("TerrainControl")) {
-            Registration.register("TerrainControl", TerrainControlMundo::load, "TerrainControl");
         }
         if (Bukkit.getVersion().contains("1.8") || Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.11")) {
             Registration.register("Achievement", AchievementMundo::load);
@@ -104,19 +90,7 @@ public class Mundo extends JavaPlugin {
 	}
 
     @Override
-    public void onDisable() {
-        UtilFunctionSocket.onDisable();
-        Logging.info("Closed all function sockets (if any were open)");
-        WebSocketManager.stopAllServers(0);
-        Logging.info("Stopped all WebSocket servers (if any were open)");
-        try {
-            WorldLoader.save();
-            Logging.info("Successfully saved all (if any) world loaders");
-        } catch (IOException e) {
-            Logging.info("A problem occurred while saving world loaders");
-            Logging.reportException(this, e);
-        }
-    }
+    public void onDisable() {}
 
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String unusedWorldName, String id) {
