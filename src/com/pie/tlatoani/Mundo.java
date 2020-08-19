@@ -4,30 +4,23 @@ import ch.njol.skript.Skript;
 import com.pie.tlatoani.Achievement.AchievementMundo;
 import com.pie.tlatoani.Book.BookMundo;
 import com.pie.tlatoani.Chunk.ChunkMundo;
-import com.pie.tlatoani.CustomEvent.CustomEventMundo;
 import com.pie.tlatoani.EnchantedBook.EnchantedBookMundo;
-import com.pie.tlatoani.Generator.GeneratorManager;
 import com.pie.tlatoani.ListUtil.ListUtil;
 import com.pie.tlatoani.Miscellaneous.MiscMundo;
 import com.pie.tlatoani.Probability.ProbabilityMundo;
-import com.pie.tlatoani.ProtocolLib.PacketManager;
 import com.pie.tlatoani.Core.Registration.Documentation;
 import com.pie.tlatoani.Core.Registration.Registration;
+import com.pie.tlatoani.ProtocolLib.PacketManager;
 import com.pie.tlatoani.Skin.SkinMundo;
 import com.pie.tlatoani.Tablist.TablistMundo;
 import com.pie.tlatoani.Throwable.ThrowableMundo;
 import com.pie.tlatoani.Core.Static.*;
 import com.pie.tlatoani.WorldBorder.WorldBorderMundo;
-import com.pie.tlatoani.WorldManagement.WorldLoader.WorldLoader;
-import com.pie.tlatoani.WorldManagement.WorldManagementMundo;
 import com.pie.tlatoani.ZExperimental.ZExperimentalMundo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.IOException;
 
 public class Mundo extends JavaPlugin {
 	private static Mundo instance;
@@ -46,7 +39,6 @@ public class Mundo extends JavaPlugin {
         Config.reload();
         Logging.load(getLogger());
         Scheduling.load();
-        WorldLoader.load();
 		Skript.registerAddon(this);
 
         Logging.info("Pie is awesome :D");
@@ -60,7 +52,13 @@ public class Mundo extends JavaPlugin {
             Logging.info("By having debug enabled, you will have tons of random annoying spam in your console");
             Logging.info("If you would like to disable debug, simply go to your 'plugins' folder, go to the 'MundoSK' folder, open 'config.yml', and where it says 'debug', remove all following text");
         }
-
+        if (Utilities.serverHasPlugin("ProtocolLib")) {
+            Registration.register("Packet", PacketManager::load, "ProtocolLib");
+            if (Config.IMPLEMENT_PACKET_STUFF.getCurrentValue()) {
+                Registration.register("Skin", SkinMundo::load, "ProtocolLib");
+                Registration.register("Tablist", TablistMundo::load, "ProtocolLib");
+            }
+        }
         Registration.register("Book", BookMundo::load);
         Registration.register("Chunk", ChunkMundo::load);
         Registration.register("EnchantedBook", EnchantedBookMundo::load);
@@ -69,33 +67,18 @@ public class Mundo extends JavaPlugin {
         Registration.register("Probability", ProbabilityMundo::load);
         Registration.register("Throwable", ThrowableMundo::load);
         Registration.register("WorldBorder", WorldBorderMundo::load);
-        Registration.register("WorldManagement", WorldManagementMundo::load);
-        if (Utilities.serverHasPlugin("ProtocolLib")) {
-            Registration.register("Packet", PacketManager::load, "ProtocolLib");
-            if (Config.IMPLEMENT_PACKET_STUFF.getCurrentValue()) {
-                Registration.register("Skin", SkinMundo::load, "ProtocolLib");
-                Registration.register("Tablist", TablistMundo::load, "ProtocolLib");
-            }
-        }
         if (Bukkit.getVersion().contains("1.8") || Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.11")) {
             Registration.register("Achievement", AchievementMundo::load);
         }
 
         //ZExperimental ~ The Z is for mystery (it's so that it appears last in the package list)
         Registration.register("ZExperimental", ZExperimentalMundo::load);
-
-        Registration.register("CustomEvent", CustomEventMundo::load);
 		Logging.info("Awesome syntaxes have been registered!");
 		Scheduling.sync(Documentation::buildDocumentation);
 	}
 
     @Override
     public void onDisable() {}
-
-    @Override
-    public ChunkGenerator getDefaultWorldGenerator(String unusedWorldName, String id) {
-        return GeneratorManager.getSkriptGenerator(id);
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

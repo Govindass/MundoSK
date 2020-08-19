@@ -71,6 +71,14 @@ public class PacketManager {
         Registration.registerEffect(EffReceivePacket.class, "rec(ei|ie)ve packet[s] %packets% from %players%") //Included incorrect spelling to avoid wasted time
                 .document("Receive Packet", "1.8", "Makes the server simulate receiving the specified packet(s) from the specified player(s)");
         Registration.registerEffect(EffPacketInfo.class, "packet info %packet%");
+        Registration.registerEvent("Packet Event", EvtPacketEvent.class, MundoPacketEvent.class, "packet event %packettypes%")
+                .document("Packet Event", "1.8", "Called when a packet of one of the specified types is being sent or received.")
+                .eventValue(PacketContainer.class, "1.8", "The packet being sent or received.")
+                .eventValue(PacketType.class, "1.8", "The packettype of the packet being sent or received. Equivalent to 'event packet's packettype'.")
+                .eventValue(Player.class, "1.8", "The player sending or receiving the packet.");
+        Registration.registerEventValue(MundoPacketEvent.class, PacketContainer.class, MundoPacketEvent::getPacket);
+        Registration.registerEventValue(MundoPacketEvent.class, PacketType.class, MundoPacketEvent::getPacketType);
+        Registration.registerEventValue(MundoPacketEvent.class, Player.class, MundoPacketEvent::getPlayer);
         Registration.registerPropertyExpression(ExprTypeOfPacket.class, PacketType.class, "packet", "packettype")
                 .document("Type of Packet", "1.8", "An expression for the packettype of the specified packet.");
         registerPacketInfoExpression(ExprNewPacket.class, PacketContainer.class, "new %packettype% packet")

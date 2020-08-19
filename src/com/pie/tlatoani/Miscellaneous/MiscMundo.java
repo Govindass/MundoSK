@@ -12,8 +12,6 @@ import ch.njol.yggdrasil.Fields;
 import com.pie.tlatoani.Core.Static.Utilities;
 import com.pie.tlatoani.Miscellaneous.ArmorStand.ArmorStandEquipmentSlot;
 import com.pie.tlatoani.Miscellaneous.ArmorStand.EvtArmorStandPlace;
-import com.pie.tlatoani.Miscellaneous.Hanging.EvtUnhang;
-import com.pie.tlatoani.Miscellaneous.Hanging.ExprHangedEntity;
 import com.pie.tlatoani.Miscellaneous.JSON.EffPutJsonInListVariable;
 import com.pie.tlatoani.Miscellaneous.JSON.ExprListVariableAsJson;
 import com.pie.tlatoani.Miscellaneous.JSON.ExprStringAsJson;
@@ -161,15 +159,8 @@ public class MiscMundo {
                 .eventValue(Player.class, "1.6.4", "The player that hung the hanged entity (same as event-entity).")
                 .eventValue(Block.class, "1.6.4", "The block on which the hanged entity was hung.");
         Registration.registerEventValue(HangingPlaceEvent.class, Block.class, HangingPlaceEvent::getBlock);
-        Registration.registerEvent("Unhang Event", EvtUnhang.class, HangingBreakEvent.class, "unhang [due to %-hangingremovecauses%]")
-                .document("Unhang", "1.8", "Called when an entity is unhung. Can be cancelled. "
-                        + "Optionally, you can specify hanging remove causes which make the trigger only be called if the unhanging is due to those reasons. "
-                        + "Also see the Hanged Entity expression.")
-                .eventValue(Entity.class, "1.8", "The entity that unhung the hanged entity.");
         Registration.registerEventValue(HangingBreakByEntityEvent.class, Entity.class, HangingBreakByEntityEvent::getRemover);
         Registration.registerEventValue(HangingBreakEvent.class, HangingBreakEvent.RemoveCause.class, HangingBreakEvent::getCause);
-        Registration.registerExpression(ExprHangedEntity.class,Entity.class, ExpressionType.SIMPLE,"hanged entity")
-                .document("Hanged Entity", "1.6.5", "An expression, used in the Hang and Unhang events, for the entity which was hung/unhung.");
     }
 
     public static Object serializeJSONElement(Object object) {
